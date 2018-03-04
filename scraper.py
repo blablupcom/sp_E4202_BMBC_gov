@@ -83,7 +83,7 @@ def convert_mth_strings ( mth_string ):
 #### VARIABLES 1.0
 
 entity_id = "E4202_BMBC_gov"
-url = "http://www.bury.gov.uk/index.aspx?articleid=10550"
+url = "https://www.bury.gov.uk/index.aspx?articleid=10550"
 errors = 0
 data = []
 
@@ -99,7 +99,7 @@ soup = BeautifulSoup(html.text, 'lxml')
 links = soup.find_all('a', 'media')
 for link in links:
     if 'http' not in link['href']:
-         url = 'http://www.bury.gov.uk/' + link['href']
+         url = 'https://www.bury.gov.uk/' + link['href']
     else:
         url = link['href']
     csvfile = link.text
