@@ -37,19 +37,18 @@ def validateFilename(filename):
 
 def validateURL(url):
     try:
-        r = urllib2.urlopen(url)
+        r = requests.get(url, verify=False)
         count = 1
-        while r.getcode() == 500 and count < 4:
+        while r.status_code == 500 and count < 4:
             print ("Attempt {0} - Status code: {1}. Retrying.".format(count, r.status_code))
             count += 1
-            r = urllib2.urlopen(url)
+            r = requests.get(url, verify=False)
         sourceFilename = r.headers.get('Content-Disposition')
-
         if sourceFilename:
             ext = os.path.splitext(sourceFilename)[1].replace('"', '').replace(';', '').replace(' ', '')
         else:
             ext = os.path.splitext(url)[1]
-        validURL = r.getcode() == 200
+        validURL = r.status_code == 200
         validFiletype = ext.lower() in ['.csv', '.xls', '.xlsx']
         return validURL, validFiletype
     except:
@@ -89,16 +88,20 @@ errors = 0
 data = []
 
 #### READ HTML 1.0
+import requests
 
-html = urllib2.urlopen(url)
-soup = BeautifulSoup(html, 'lxml')
+html = requests.get(url, verify=False)
+soup = BeautifulSoup(html.text, 'lxml')
 
 #### SCRAPE DATA
 
 
 links = soup.find_all('a', 'media')
 for link in links:
-    url = 'http://www.bury.gov.uk/' + link['href']
+    if 'http' not in link['href']:
+         url = 'http://www.bury.gov.uk/' + link['href']
+    else:
+        url = link['href']
     csvfile = link.text
     csvMth = csvfile.split('-')[0][:3]
     csvYr = csvfile.split('-')[0].strip()[-4:]
