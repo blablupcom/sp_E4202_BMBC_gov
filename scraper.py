@@ -90,7 +90,7 @@ data = []
 #### READ HTML 1.0
 import requests
 
-html = requests.get(url, verify=False)
+html = requests.get(url)
 soup = BeautifulSoup(html.text, 'lxml')
 
 #### SCRAPE DATA
